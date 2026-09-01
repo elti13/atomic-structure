@@ -1,0 +1,1490 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Unit 1: Atomic Structure</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --navy-900:#04101f;
+  --navy-800:#0a1d33;
+  --navy-700:#102947;
+  --line:#1a3554;
+  --cyan:#5cd3f5;
+  --cyan-dim:#2b8fb3;
+  --orange:#ff9052;
+  --gray:#93a9c2;
+  --paper:#ffffff;
+  --ink:#0a1d33;
+  --ink-soft:#4a627e;
+  --r:14px;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  margin:0;
+  background:var(--navy-900);
+  color:#eef6ff;
+  font-family:"DM Sans",system-ui,sans-serif;
+  font-size:17px;
+  line-height:1.6;
+  -webkit-font-smoothing:antialiased;
+}
+h1,h2,h3,h4{line-height:1.15;margin:0 0 .5em;font-weight:700;letter-spacing:-.02em}
+h1{font-size:clamp(2.2rem,5vw,3.4rem)}
+h2{font-size:clamp(1.5rem,3vw,2rem)}
+h3{font-size:1.15rem}
+p{margin:0 0 1em;max-width:68ch}
+mono,.mono,code{font-family:"IBM Plex Mono",monospace}
+a{color:var(--cyan)}
+button{font-family:inherit;font-size:inherit;cursor:pointer}
+:focus-visible{outline:3px solid var(--orange);outline-offset:3px}
+
+/* ---------- shell ---------- */
+.topbar{
+  position:sticky;top:0;z-index:40;
+  display:flex;align-items:center;gap:18px;
+  padding:12px 22px;
+  background:rgba(4,16,31,.92);
+  backdrop-filter:blur(8px);
+  border-bottom:1px solid var(--line);
+}
+.brand{font-weight:700;letter-spacing:-.01em}
+.brand span{color:var(--cyan)}
+.progress-wrap{margin-left:auto;display:flex;align-items:center;gap:10px;font-size:.85rem;color:var(--gray)}
+.bar{width:150px;height:6px;border-radius:99px;background:var(--navy-700);overflow:hidden}
+.bar i{display:block;height:100%;width:0;background:var(--cyan);transition:width .4s ease}
+
+.layout{display:grid;grid-template-columns:250px minmax(0,1fr);gap:0;min-height:100vh}
+.rail{
+  border-right:1px solid var(--line);
+  padding:26px 14px 60px;
+  position:sticky;top:53px;align-self:start;max-height:calc(100vh - 53px);overflow:auto;
+}
+.rail h4{font-size:.75rem;letter-spacing:.08em;color:var(--gray);font-weight:500;margin-bottom:14px;padding-left:10px}
+.rail button{
+  display:flex;gap:10px;align-items:baseline;width:100%;text-align:left;
+  background:none;border:0;color:#cfe0f2;padding:8px 10px;border-radius:9px;
+  font-size:.94rem;line-height:1.3;
+}
+.rail button:hover{background:var(--navy-800)}
+.rail button.active{background:var(--navy-700);color:#fff}
+.rail button .num{font-family:"IBM Plex Mono",monospace;font-size:.78rem;color:var(--cyan-dim);min-width:20px}
+.rail button.done .num::after{content:"✓";color:var(--cyan);margin-left:2px}
+.rail hr{border:0;border-top:1px solid var(--line);margin:18px 8px}
+
+main{padding:0 30px 120px;max-width:900px}
+section[data-view]{display:none;padding-top:46px}
+section[data-view].on{display:block;animation:fade .35s ease}
+@keyframes fade{from{opacity:0}to{opacity:1}}
+
+/* ---------- surfaces ---------- */
+.paper{
+  background:var(--paper);color:var(--ink);
+  border-radius:var(--r);padding:30px 32px;margin:0 0 22px;
+}
+.paper p{color:var(--ink-soft)}
+.paper h2,.paper h3{color:var(--ink)}
+.lab{
+  background:linear-gradient(180deg,#0b2038,#081727);
+  border:1px solid var(--line);border-radius:var(--r);
+  padding:26px 28px;margin:0 0 22px;
+}
+.lab h3{color:var(--cyan);font-size:.95rem;font-weight:500;letter-spacing:.04em;margin-bottom:18px}
+.key{
+  border-left:4px solid var(--orange);
+  background:rgba(255,144,82,.09);
+  padding:16px 20px;border-radius:0 10px 10px 0;margin:0 0 22px;
+}
+.key p:last-child{margin-bottom:0}
+.key strong{color:var(--orange)}
+.eq{
+  font-family:"IBM Plex Mono",monospace;font-size:1.35rem;
+  text-align:center;padding:18px;border:1px dashed var(--cyan-dim);border-radius:10px;
+  color:var(--cyan);margin:0 0 20px;background:rgba(92,211,245,.05)
+}
+.paper .eq{background:#f2f9ff;border-color:#bfe4f2;color:#0d5f7d}
+.lede{font-size:1.15rem;color:#c8dbef;max-width:60ch}
+
+/* ---------- home ---------- */
+.hero{display:grid;grid-template-columns:1.1fr .9fr;gap:40px;align-items:center;padding:30px 0 50px}
+.hero p{color:#c2d6ec;font-size:1.1rem}
+.cta{
+  display:inline-block;background:var(--orange);color:#20130a;border:0;
+  padding:14px 26px;border-radius:99px;font-weight:700;
+}
+.cta:hover{filter:brightness(1.08)}
+.cta.ghost{background:none;color:var(--cyan);border:1px solid var(--cyan-dim);margin-left:10px}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.tile{border:1px solid var(--line);border-radius:12px;padding:20px;background:var(--navy-800)}
+.tile .n{font-family:"IBM Plex Mono",monospace;color:var(--cyan-dim);font-size:.8rem}
+.tile h3{margin:.4em 0 .3em;font-size:1.02rem}
+.tile p{font-size:.9rem;color:var(--gray);margin:0}
+
+/* atom */
+.atom{width:100%;max-width:340px;margin:auto;display:block}
+.orbit-ring{fill:none;stroke:#22496f;stroke-width:1.2}
+.spin{transform-origin:170px 170px;transform-box:view-box}
+.s1{animation:spin 7s linear infinite}
+.s2{animation:spin 11s linear infinite reverse}
+.s3{animation:spin 15s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.electron{fill:var(--cyan);filter:drop-shadow(0 0 6px rgba(92,211,245,.9))}
+.nucleon-p{fill:var(--orange)}
+.nucleon-n{fill:#7f96b0}
+
+/* ---------- path ---------- */
+.path{display:flex;flex-direction:column;gap:10px;margin-bottom:30px}
+.step{
+  display:grid;grid-template-columns:44px 1fr auto;align-items:center;gap:14px;
+  border:1px solid var(--line);background:var(--navy-800);border-radius:12px;padding:14px 18px;
+  text-align:left;color:#e7f1fb;width:100%;
+}
+.step:hover{border-color:var(--cyan-dim)}
+.step .num{font-family:"IBM Plex Mono",monospace;color:var(--cyan);font-size:.95rem}
+.step .sub{display:block;font-size:.85rem;color:var(--gray)}
+.step .tag{font-size:.72rem;color:var(--gray);border:1px solid var(--line);padding:3px 9px;border-radius:99px}
+.step.done .tag{color:var(--cyan);border-color:var(--cyan-dim)}
+
+/* ---------- lesson bits ---------- */
+.crumb{font-family:"IBM Plex Mono",monospace;font-size:.8rem;color:var(--cyan-dim);margin-bottom:6px}
+.cards3{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:22px}
+.pcard{border:1px solid var(--line);border-radius:12px;padding:18px;background:var(--navy-800);text-align:center}
+.pcard .glyph{font-size:1.6rem;font-weight:700;font-family:"IBM Plex Mono",monospace}
+.pcard .charge{font-size:.85rem;color:var(--gray)}
+.pos{color:var(--orange)}.neg{color:var(--cyan)}.zero{color:#9fb3c9}
+
+table.data{width:100%;border-collapse:collapse;font-size:.94rem;margin-bottom:18px}
+table.data th,table.data td{text-align:left;padding:9px 12px;border-bottom:1px solid var(--line)}
+table.data th{color:var(--gray);font-weight:500;font-size:.82rem}
+.paper table.data th,.paper table.data td{border-color:#e3ecf5}
+.paper table.data th{color:var(--ink-soft)}
+
+/* timeline */
+.tl{display:flex;gap:0;overflow-x:auto;padding-bottom:10px}
+.tl-item{min-width:180px;padding:0 16px 0 0;position:relative}
+.tl-item button{
+  width:100%;text-align:left;background:var(--navy-800);border:1px solid var(--line);
+  border-radius:10px;padding:14px;color:#e7f1fb}
+.tl-item button.sel{border-color:var(--cyan);background:var(--navy-700)}
+.tl-year{font-family:"IBM Plex Mono",monospace;color:var(--cyan);font-size:.85rem}
+.tl-name{font-weight:700}
+.tl-rail{height:2px;background:var(--line);margin:14px 0 16px;position:relative}
+.tl-rail i{position:absolute;top:-3px;width:8px;height:8px;border-radius:99px;background:var(--cyan);transition:left .3s}
+.tl-detail{border-left:3px solid var(--cyan);padding-left:16px;min-height:70px;color:#c8dbef}
+
+/* orbital boxes */
+.orbset{display:flex;gap:10px;flex-wrap:wrap;align-items:flex-end;margin-bottom:14px}
+.obox{
+  width:52px;height:40px;border:1px solid var(--cyan-dim);border-radius:6px;
+  display:flex;align-items:center;justify-content:center;gap:2px;
+  font-family:"IBM Plex Mono",monospace;color:var(--cyan);background:rgba(92,211,245,.06)
+}
+.obox .arr{font-size:1.2rem;line-height:1}
+.obox-label{font-size:.75rem;color:var(--gray);text-align:center;display:block;margin-top:6px}
+.ctrl{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin:14px 0 6px}
+.btn{
+  background:var(--navy-700);border:1px solid var(--line);color:#dcebfa;
+  padding:9px 16px;border-radius:8px
+}
+.btn:hover{border-color:var(--cyan-dim)}
+.btn.primary{background:var(--cyan);color:#04202c;border-color:var(--cyan);font-weight:700}
+.readout{font-family:"IBM Plex Mono",monospace;color:var(--cyan);font-size:.95rem}
+.note{font-size:.9rem;color:var(--gray)}
+
+/* notation dissector */
+.notation{display:flex;justify-content:center;gap:2px;font-family:"IBM Plex Mono",monospace;font-size:3rem;margin-bottom:10px}
+.notation button{background:none;border:0;color:#4f6f8f;padding:0 4px;font:inherit;transition:color .2s}
+.notation button.sel,.notation button:hover{color:var(--cyan)}
+.notation .sup{font-size:1.7rem;vertical-align:super}
+
+/* sliders */
+.slider-row{display:grid;grid-template-columns:130px 1fr 90px;gap:14px;align-items:center;margin-bottom:12px}
+.slider-row label{font-size:.9rem;color:var(--gray)}
+input[type=range]{width:100%;accent-color:var(--cyan)}
+
+/* coulomb */
+.coul{position:relative;height:120px;border-bottom:1px solid var(--line);margin-bottom:16px}
+.coul .nuc{position:absolute;left:20px;top:44px;width:38px;height:38px;border-radius:99px;background:var(--orange);display:flex;align-items:center;justify-content:center;color:#20130a;font-weight:700;font-family:"IBM Plex Mono",monospace}
+.coul .el{position:absolute;top:53px;width:20px;height:20px;border-radius:99px;background:var(--cyan);box-shadow:0 0 14px rgba(92,211,245,.8);transition:left .15s}
+.coul .fline{position:absolute;top:62px;left:58px;height:2px;background:linear-gradient(90deg,var(--orange),var(--cyan));transition:width .15s}
+
+/* periodic table */
+.ptwrap{overflow-x:auto;padding-bottom:8px}
+.pt{display:grid;grid-template-columns:repeat(18,minmax(30px,1fr));gap:3px;min-width:600px}
+.el{
+  aspect-ratio:1;border-radius:4px;border:1px solid #1d3d60;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  font-size:.62rem;color:#cfe2f5;background:#0d2136;position:relative
+}
+.el b{font-size:.82rem;font-family:"IBM Plex Mono",monospace}
+.el .z{position:absolute;top:2px;left:3px;font-size:.5rem;color:#5f7c9b}
+.trendbtns{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px}
+.trendbtns .btn.sel{background:var(--cyan);color:#04202c;border-color:var(--cyan);font-weight:700}
+.arrows{display:flex;gap:26px;margin-top:14px;font-size:.9rem;color:var(--gray);flex-wrap:wrap}
+
+/* ions */
+.shells{display:flex;align-items:center;gap:22px;flex-wrap:wrap}
+.dotgrid{display:flex;flex-wrap:wrap;gap:5px;max-width:230px}
+.dot{width:13px;height:13px;border-radius:99px;background:var(--cyan);box-shadow:0 0 6px rgba(92,211,245,.6)}
+.dot.p{background:var(--orange);box-shadow:none}
+.ionsym{font-family:"IBM Plex Mono",monospace;font-size:2.4rem;color:#fff}
+.ionsym sup{color:var(--orange);font-size:1.2rem}
+
+/* isoelectronic */
+.iso{display:flex;gap:14px;align-items:flex-end;justify-content:center;flex-wrap:wrap;margin-bottom:10px}
+.iso figure{margin:0;text-align:center}
+.iso .ball{border-radius:99px;background:radial-gradient(circle at 34% 32%,#7ee0ff,#1c6f92);margin:0 auto 8px}
+.iso figcaption{font-family:"IBM Plex Mono",monospace;font-size:.85rem;color:#cfe2f5}
+.iso small{display:block;color:var(--gray);font-size:.72rem}
+
+/* split */
+.split{display:grid;grid-template-columns:1fr 1fr;gap:0;border:1px solid var(--line);border-radius:12px;overflow:hidden}
+.split>div{padding:22px}
+.split>div:first-child{background:#0d2338;border-right:1px solid var(--line)}
+.split h3{margin-bottom:14px}
+.split ul{margin:0;padding-left:18px;color:#c8dbef;font-size:.94rem}
+.split li{margin-bottom:7px}
+
+/* pes */
+.pes{display:block;width:100%;height:auto}
+
+/* checks */
+.check{background:#fff;color:var(--ink);border-radius:var(--r);padding:26px 28px;margin:0 0 22px;border-top:5px solid var(--orange)}
+.check .qlabel{font-family:"IBM Plex Mono",monospace;font-size:.75rem;color:var(--ink-soft);margin-bottom:8px}
+.check p.q{font-weight:700;color:var(--ink);margin-bottom:16px;font-size:1.05rem}
+.opts{display:flex;flex-direction:column;gap:9px}
+.opts button{
+  text-align:left;background:#f4f8fc;border:1px solid #dae6f1;color:var(--ink);
+  padding:12px 16px;border-radius:9px
+}
+.opts button:hover{border-color:var(--orange)}
+.opts button.right{background:#e7f8ee;border-color:#57b97e}
+.opts button.wrong{background:#fdecec;border-color:#e08b8b}
+.opts button[disabled]{cursor:default}
+.fb{margin-top:14px;font-size:.94rem;color:var(--ink-soft);min-height:0}
+.fb.show{min-height:24px}
+.fb b{color:var(--ink)}
+
+.lessonnav{display:flex;justify-content:space-between;gap:12px;margin-top:34px}
+
+/* calculators */
+.calc-out{border:1px solid var(--line);border-radius:10px;padding:16px;background:#081727;font-family:"IBM Plex Mono",monospace;font-size:.92rem;color:#cfe2f5;white-space:pre-wrap}
+select,input[type=number]{
+  font-family:inherit;font-size:.95rem;background:var(--navy-700);color:#eaf4ff;
+  border:1px solid var(--line);border-radius:8px;padding:9px 12px
+}
+.chipset{display:flex;flex-wrap:wrap;gap:6px;margin:14px 0}
+.chip{
+  font-family:"IBM Plex Mono",monospace;background:var(--navy-700);border:1px solid var(--line);
+  color:#cfe2f5;padding:7px 11px;border-radius:8px;font-size:.95rem
+}
+.chip:hover{border-color:var(--cyan)}
+.chip.sel{background:var(--cyan);color:#04202c;border-color:var(--cyan);font-weight:700}
+.chip sup{font-size:.7em}
+
+.final-q{border:1px solid var(--line);border-radius:12px;padding:18px;margin-bottom:12px;background:var(--navy-800)}
+.final-q .qn{font-family:"IBM Plex Mono",monospace;color:var(--cyan-dim);font-size:.8rem}
+
+@media (max-width:860px){
+  .layout{grid-template-columns:1fr}
+  .rail{position:static;max-height:none;border-right:0;border-bottom:1px solid var(--line);
+    display:flex;gap:6px;overflow-x:auto;padding:12px}
+  .rail h4,.rail hr{display:none}
+  .rail button{width:auto;white-space:nowrap}
+  main{padding:0 18px 90px}
+  .hero{grid-template-columns:1fr;gap:22px}
+  .grid3,.cards3{grid-template-columns:1fr}
+  .split{grid-template-columns:1fr}
+  .split>div:first-child{border-right:0;border-bottom:1px solid var(--line)}
+  .paper,.lab,.check{padding:22px 20px}
+}
+@media (prefers-reduced-motion:reduce){
+  *{animation:none!important;transition:none!important}
+  html{scroll-behavior:auto}
+}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="brand">Unit 1 · <span>Atomic Structure</span></div>
+  <div class="progress-wrap">
+    <span id="pcount">0 of 10 lessons</span>
+    <div class="bar"><i id="pbar"></i></div>
+  </div>
+</div>
+
+<div class="layout">
+  <nav class="rail" id="rail" aria-label="Unit contents">
+    <h4>Contents</h4>
+    <button data-go="home"><span class="num">—</span> Overview</button>
+    <button data-go="dash"><span class="num">—</span> Unit path</button>
+    <hr>
+    <button data-go="l1"><span class="num">01</span> What is an atom?</button>
+    <button data-go="l2"><span class="num">02</span> Inside the atom</button>
+    <button data-go="l3"><span class="num">03</span> Electron configuration</button>
+    <button data-go="l4"><span class="num">04</span> Light &amp; energy</button>
+    <button data-go="l5"><span class="num">05</span> Coulomb's law</button>
+    <button data-go="l6"><span class="num">06</span> Effective nuclear charge</button>
+    <button data-go="l7"><span class="num">07</span> Periodic trends</button>
+    <button data-go="l8"><span class="num">08</span> Ions &amp; ionic size</button>
+    <button data-go="l9"><span class="num">09</span> Metals &amp; nonmetals</button>
+    <button data-go="l10"><span class="num">10</span> Chemistry calculations</button>
+    <hr>
+    <button data-go="final"><span class="num">★</span> End-of-unit challenge</button>
+  </nav>
+
+  <main>
+
+  <!-- ===================== HOME ===================== -->
+  <section data-view="home" class="on">
+    <div class="hero">
+      <div>
+        <h1>Chemistry starts with the atom.</h1>
+        <p>How atoms are built, how electrons arrange themselves, and why the elements fall into patterns that can be predicted rather than memorized.</p>
+        <button class="cta" data-go="l1">Start Unit 1</button>
+        <button class="cta ghost" data-go="dash">See the unit path</button>
+      </div>
+      <div>
+        <svg class="atom" viewBox="0 0 340 340" role="img" aria-label="An atom: a small nucleus of protons and neutrons surrounded by three shells of electrons">
+          <defs>
+            <radialGradient id="cloud" cx="50%" cy="50%">
+              <stop offset="0%" stop-color="#5cd3f5" stop-opacity=".22"/>
+              <stop offset="70%" stop-color="#5cd3f5" stop-opacity=".04"/>
+              <stop offset="100%" stop-color="#5cd3f5" stop-opacity="0"/>
+            </radialGradient>
+          </defs>
+          <circle cx="170" cy="170" r="160" fill="url(#cloud)"/>
+          <circle class="orbit-ring" cx="170" cy="170" r="62"/>
+          <circle class="orbit-ring" cx="170" cy="170" r="104"/>
+          <circle class="orbit-ring" cx="170" cy="170" r="145"/>
+          <g class="spin s1"><circle class="electron" cx="232" cy="170" r="6"/><circle class="electron" cx="108" cy="170" r="6"/></g>
+          <g class="spin s2"><circle class="electron" cx="274" cy="170" r="6"/><circle class="electron" cx="170" cy="66" r="6"/></g>
+          <g class="spin s3"><circle class="electron" cx="315" cy="170" r="6"/><circle class="electron" cx="170" cy="315" r="6"/><circle class="electron" cx="25" cy="170" r="6"/></g>
+          <g>
+            <circle class="nucleon-p" cx="163" cy="165" r="9"/>
+            <circle class="nucleon-n" cx="178" cy="163" r="9"/>
+            <circle class="nucleon-p" cx="170" cy="178" r="9"/>
+            <circle class="nucleon-n" cx="157" cy="177" r="9"/>
+          </g>
+        </svg>
+      </div>
+    </div>
+
+    <h2>What this unit covers</h2>
+    <div class="grid3" style="margin-bottom:16px">
+      <div class="tile"><div class="n">01</div><h3>The atom</h3><p>Protons, neutrons, electrons, and a nucleus that holds almost all the mass in almost none of the space.</p></div>
+      <div class="tile"><div class="n">02</div><h3>Electrons</h3><p>Energy levels, sublevels, orbitals, and the rules that decide where each electron goes.</p></div>
+      <div class="tile"><div class="n">03</div><h3>Nuclear attraction</h3><p>Coulomb's law, shielding, and the effective nuclear charge an outer electron actually feels.</p></div>
+    </div>
+    <div class="grid3">
+      <div class="tile"><div class="n">04</div><h3>Periodic trends</h3><p>Why radius, ionization energy, electron affinity, and electronegativity shift across the table.</p></div>
+      <div class="tile"><div class="n">05</div><h3>Light &amp; energy</h3><p>Wavelength, frequency, photons, and the evidence that energy comes in fixed packets.</p></div>
+      <div class="tile"><div class="n">06</div><h3>Calculations</h3><p>Moles, molar mass, empirical formulas, and percent composition.</p></div>
+    </div>
+  </section>
+
+  <!-- ===================== DASHBOARD ===================== -->
+  <section data-view="dash">
+    <div class="crumb">UNIT 1</div>
+    <h1 style="font-size:2.4rem">Atomic structure</h1>
+    <p class="lede">Ten lessons, in order. Each one explains an idea, shows it, then checks it. Later lessons lean on earlier ones — periodic trends only make sense once shielding does.</p>
+    <div class="path" id="path"></div>
+    <div class="key">
+      <p><strong>How each lesson runs.</strong> Concept → visual → why it happens → worked example → practice → feedback. Formulas arrive last, after the idea they describe.</p>
+    </div>
+  </section>
+
+  <!-- ===================== L1 ===================== -->
+  <section data-view="l1" data-lesson="1">
+    <div class="crumb">LESSON 01</div>
+    <h1>What is an atom?</h1>
+    <p class="lede">Everything with mass is built from atoms. An atom is the smallest unit of an element that still behaves like that element.</p>
+
+    <div class="paper">
+      <h3>Three particles, two locations</h3>
+      <p>An atom has a dense center called the nucleus, holding protons and neutrons. Electrons occupy the space around it. Charge is what separates the three.</p>
+    </div>
+
+    <div class="cards3">
+      <div class="pcard"><div class="glyph pos">p⁺</div><div class="charge">Charge +1</div><p class="note" style="margin:8px 0 0">In the nucleus. Mass ≈ 1 amu.</p></div>
+      <div class="pcard"><div class="glyph zero">n⁰</div><div class="charge">Charge 0</div><p class="note" style="margin:8px 0 0">In the nucleus. Mass ≈ 1 amu.</p></div>
+      <div class="pcard"><div class="glyph neg">e⁻</div><div class="charge">Charge −1</div><p class="note" style="margin:8px 0 0">Outside the nucleus. Nearly massless.</p></div>
+    </div>
+
+    <div class="lab">
+      <h3>Scale of the nucleus</h3>
+      <svg viewBox="0 0 640 200" style="width:100%;height:auto" role="img" aria-label="Diagram comparing the size of the whole atom to its nucleus">
+        <defs><radialGradient id="cloud2" cx="50%" cy="50%"><stop offset="0%" stop-color="#5cd3f5" stop-opacity=".2"/><stop offset="100%" stop-color="#5cd3f5" stop-opacity="0"/></radialGradient></defs>
+        <circle cx="150" cy="100" r="88" fill="url(#cloud2)" stroke="#22496f" stroke-dasharray="4 5"/>
+        <circle cx="150" cy="100" r="1.6" fill="#ff9052"/>
+        <line x1="152" y1="99" x2="330" y2="52" stroke="#2b8fb3" stroke-width="1"/>
+        <line x1="152" y1="101" x2="330" y2="150" stroke="#2b8fb3" stroke-width="1"/>
+        <circle cx="440" cy="100" r="52" fill="#12294a" stroke="#ff9052"/>
+        <circle cx="430" cy="92" r="11" fill="#ff9052"/><circle cx="452" cy="94" r="11" fill="#7f96b0"/>
+        <circle cx="437" cy="112" r="11" fill="#7f96b0"/><circle cx="458" cy="115" r="11" fill="#ff9052"/>
+        <text x="150" y="205" fill="#93a9c2" font-size="13" text-anchor="middle" font-family="DM Sans">the atom</text>
+        <text x="440" y="172" fill="#93a9c2" font-size="13" text-anchor="middle" font-family="DM Sans">the nucleus, magnified</text>
+      </svg>
+      <p class="note" style="margin-top:14px">The nucleus takes up roughly one hundredth of the atom's width. Almost all of an atom's volume is empty space; almost all of its mass sits in that speck at the center.</p>
+    </div>
+
+    <div class="key">
+      <p><strong>Two models, one atom.</strong> Drawing electrons on neat rings is a starting picture, not the real thing. Electrons do not travel fixed circular paths. The modern description gives regions of space where an electron is likely to be found — a probability cloud, not an orbit.</p>
+    </div>
+
+    <div class="check" data-check>
+      <div class="qlabel">CHECK</div>
+      <p class="q">Which particle determines which element an atom is?</p>
+      <div class="opts">
+        <button data-fb="Neutrons change the isotope, not the element. Carbon-12 and carbon-14 are both carbon.">Neutron</button>
+        <button data-correct data-fb="Correct. The number of protons is the atomic number, and it defines the element. Change the proton count and it is a different element entirely.">Proton</button>
+        <button data-fb="Electrons can be gained or lost to make ions, but the atom stays the same element.">Electron</button>
+      </div>
+      <p class="fb"></p>
+    </div>
+    <div class="lessonnav"><span></span><button class="btn primary" data-go="l2">Next: Inside the atom</button></div>
+  </section>
+
+  <!-- ===================== L2 ===================== -->
+  <section data-view="l2" data-lesson="2">
+    <div class="crumb">LESSON 02</div>
+    <h1>Inside the atom</h1>
+    <p class="lede">Nobody has ever seen an atom directly. The current model was assembled from experiments, each one correcting the last.</p>
+
+    <div class="lab">
+      <h3>How the model changed</h3>
+      <div class="tl" id="tl"></div>
+      <div class="tl-rail"><i id="tlDot" style="left:0"></i></div>
+      <div class="tl-detail" id="tlDetail"></div>
+    </div>
+
+    <div class="paper">
+      <h3>Counting the particles</h3>
+      <table class="data">
+        <tr><th>Quantity</th><th>Meaning</th><th>How to get it</th></tr>
+        <tr><td>Atomic number (Z)</td><td>Number of protons; the nuclear charge</td><td>Read from the periodic table</td></tr>
+        <tr><td>Mass number (A)</td><td>Protons plus neutrons</td><td>A = p⁺ + n⁰</td></tr>
+        <tr><td>Neutrons</td><td>Uncharged nuclear particles</td><td>n⁰ = A − Z</td></tr>
+        <tr><td>Electrons</td><td>Negative particles outside the nucleus</td><td>Z in a neutral atom; adjust for ion charge</td></tr>
+      </table>
+      <p>Isotopes are atoms of the same element with the same atomic number but different mass numbers. Carbon-12 and carbon-14 both have 6 protons; carbon-14 carries two extra neutrons.</p>
+      <p>The atomic mass printed on the periodic table is a weighted average: each isotope's mass multiplied by its natural abundance, all added together.</p>
+    </div>
+
+    <div class="lab">
+      <h3>Mass spectroscopy — identifying isotopes</h3>
+      <svg viewBox="0 0 560 190" style="width:100%;height:auto" role="img" aria-label="Mass spectrum with two peaks, a tall one and a short one">
+        <line x1="60" y1="160" x2="530" y2="160" stroke="#1a3554"/>
+        <line x1="60" y1="20" x2="60" y2="160" stroke="#1a3554"/>
+        <rect x="180" y="42" width="34" height="118" fill="#5cd3f5"/>
+        <rect x="360" y="128" width="34" height="32" fill="#2b8fb3"/>
+        <text x="197" y="34" fill="#5cd3f5" font-size="12" text-anchor="middle" font-family="IBM Plex Mono">75.8%</text>
+        <text x="377" y="120" fill="#2b8fb3" font-size="12" text-anchor="middle" font-family="IBM Plex Mono">24.2%</text>
+        <text x="197" y="178" fill="#93a9c2" font-size="12" text-anchor="middle" font-family="IBM Plex Mono">Cl-35</text>
+        <text x="377" y="178" fill="#93a9c2" font-size="12" text-anchor="middle" font-family="IBM Plex Mono">Cl-37</text>
+        <text x="295" y="15" fill="#93a9c2" font-size="12" text-anchor="middle" font-family="DM Sans">relative abundance</text>
+      </svg>
+      <p class="note">A mass spectrometer separates the atoms of an element by isotope. Each peak is one isotope; the height of the peak is how common that isotope is. Averaging those masses by abundance gives 35.45 for chlorine.</p>
+    </div>
+
+    <div class="check" data-check>
+      <div class="qlabel">CHECK</div>
+      <p class="q">An atom has a mass number of 39 and 19 protons. How many neutrons does it have?</p>
+      <div class="opts">
+        <button data-fb="That is the proton count, which is the atomic number.">19</button>
+        <button data-correct data-fb="Correct. n⁰ = A − Z = 39 − 19 = 20.">20</button>
+        <button data-fb="That would be the total of protons and neutrons together.">39</button>
+      </div>
+      <p class="fb"></p>
+    </div>
+    <div class="lessonnav"><button class="btn" data-go="l1">Back</button><button class="btn primary" data-go="l3">Next: Electron configuration</button></div>
+  </section>
+
+  <!-- ===================== L3 ===================== -->
+  <section data-view="l3" data-lesson="3">
+    <div class="crumb">LESSON 03</div>
+    <h1>Electron configuration</h1>
+    <p class="lede">Electrons are not scattered at random. They fill a strict hierarchy, and that hierarchy is what the whole periodic table is built on.</p>
+
+    <div class="paper">
+      <h3>The hierarchy</h3>
+      <p>An energy level holds sublevels. A sublevel holds orbitals. An orbital holds at most two electrons.</p>
+      <p style="font-family:'IBM Plex Mono',monospace;color:#0d5f7d;line-height:1.9">energy level → sublevel → orbital → electrons</p>
+      <table class="data">
+        <tr><th>Level</th><th>Sublevels</th><th>Orbitals</th><th>Electrons</th></tr>
+        <tr><td>1</td><td>s</td><td>1</td><td>2</td></tr>
+        <tr><td>2</td><td>s, p</td><td>1 + 3 = 4</td><td>8</td></tr>
+        <tr><td>3</td><td>s, p, d</td><td>1 + 3 + 5 = 9</td><td>18</td></tr>
+        <tr><td>4</td><td>s, p, d, f</td><td>1 + 3 + 5 + 7 = 16</td><td>32</td></tr>
+      </table>
+      <p>Each orbital holds two electrons, so the capacity of a sublevel is twice its number of orbitals: s holds 2, p holds 6, d holds 10, f holds 14.</p>
+    </div>
+
+    <div class="lab">
+      <h3>Reading the notation</h3>
+      <div class="notation" id="notation">
+        <button data-part="n">3</button><button data-part="l">p</button><button data-part="e" class="sup">5</button>
+      </div>
+      <p class="note" style="text-align:center" id="notationText">Select a part of the symbol.</p>
+    </div>
+
+    <div class="lab">
+      <h3>Rule 1 — Aufbau: lowest energy first</h3>
+      <p class="note">Electrons occupy the lowest available sublevel before any higher one. Adding electrons out of order gives an atom that is not in its ground state.</p>
+      <div class="orbset" id="aufbau"></div>
+      <div class="ctrl">
+        <button class="btn primary" id="aufAdd">Add an electron</button>
+        <button class="btn" id="aufReset">Reset</button>
+        <span class="readout" id="aufOut">0 electrons placed</span>
+      </div>
+    </div>
+
+    <div class="lab">
+      <h3>Rule 2 — Hund: spread out before pairing</h3>
+      <p class="note">Within a sublevel, every orbital takes one electron before any orbital takes a second. Electrons repel, so they occupy separate orbitals while empty ones remain.</p>
+      <div class="orbset" id="hund">
+        <div><div class="obox" data-i="0"></div><span class="obox-label">2p<sub>x</sub></span></div>
+        <div><div class="obox" data-i="1"></div><span class="obox-label">2p<sub>y</sub></span></div>
+        <div><div class="obox" data-i="2"></div><span class="obox-label">2p<sub>z</sub></span></div>
+      </div>
+      <div class="ctrl">
+        <button class="btn primary" id="hundAdd">Add an electron</button>
+        <button class="btn" id="hundReset">Reset</button>
+        <span class="readout" id="hundOut">0 of 6</span>
+      </div>
+    </div>
+
+    <div class="key">
+      <p><strong>Rule 3 — Pauli exclusion.</strong> No orbital holds more than two electrons, and those two must have opposite spins. That is why the paired boxes above read ↑↓ and never ↑↑.</p>
+    </div>
+
+    <div class="paper">
+      <h3>Worked example — calcium</h3>
+      <p>Calcium has 20 electrons. Filling from the lowest sublevel upward:</p>
+      <div class="eq">1s² 2s² 2p⁶ 3s² 3p⁶ 4s²</div>
+      <p>Counting the superscripts: 2 + 2 + 6 + 2 + 6 + 2 = 20. The shorthand replaces everything up to the previous noble gas with its symbol in brackets: [Ar] 4s². Core electrons are the inner ones; valence electrons are the outer ones that do the chemistry.</p>
+    </div>
+
+    <div class="lab">
+      <h3>Evidence: photoelectron spectroscopy</h3>
+      <p class="note">X-rays knock electrons out of an atom, and the instrument measures how tightly each one was held. The resulting spectrum matches the predicted configuration exactly.</p>
+      <svg class="pes" viewBox="0 0 560 210" role="img" aria-label="Photoelectron spectrum of oxygen with three peaks">
+        <line x1="50" y1="170" x2="540" y2="170" stroke="#1a3554"/>
+        <line x1="50" y1="20" x2="50" y2="170" stroke="#1a3554"/>
+        <rect x="90" y="100" width="30" height="70" fill="#5cd3f5"/>
+        <rect x="300" y="100" width="30" height="70" fill="#5cd3f5"/>
+        <rect x="430" y="65" width="30" height="105" fill="#5cd3f5"/>
+        <text x="105" y="92" fill="#cfe2f5" font-size="12" text-anchor="middle" font-family="IBM Plex Mono">1s²</text>
+        <text x="315" y="92" fill="#cfe2f5" font-size="12" text-anchor="middle" font-family="IBM Plex Mono">2s²</text>
+        <text x="445" y="57" fill="#cfe2f5" font-size="12" text-anchor="middle" font-family="IBM Plex Mono">2p⁴</text>
+        <text x="295" y="196" fill="#93a9c2" font-size="12" text-anchor="middle" font-family="DM Sans">binding energy increases to the left</text>
+        <text x="30" y="95" fill="#93a9c2" font-size="12" text-anchor="middle" transform="rotate(-90 30 95)" font-family="DM Sans">electrons</text>
+      </svg>
+      <p class="note">Peak height gives the number of electrons in that subshell. Peaks further left were held more tightly, meaning they sat closer to the nucleus in a lower energy level. Oxygen shows three peaks in a 2 : 2 : 4 ratio — exactly 1s² 2s² 2p⁴.</p>
+    </div>
+
+    <div class="check" data-check>
+      <div class="qlabel">CHECK</div>
+      <p class="q">In the notation 4d⁷, what does the 7 represent?</p>
+      <div class="opts">
+        <button data-fb="The principal energy level is the leading number, 4.">The energy level</button>
+        <button data-fb="A d sublevel always has 5 orbitals, whatever the level.">The number of orbitals</button>
+        <button data-correct data-fb="Correct. The superscript counts electrons: seven electrons in the 4d sublevel, which can hold ten.">The number of electrons</button>
+      </div>
+      <p class="fb"></p>
+    </div>
+    <div class="lessonnav"><button class="btn" data-go="l2">Back</button><button class="btn primary" data-go="l4">Next: Light &amp; energy</button></div>
+  </section>
+
+  <!-- ===================== L4 ===================== -->
+  <section data-view="l4" data-lesson="4">
+    <div class="crumb">LESSON 04</div>
+    <h1>Light &amp; energy</h1>
+    <p class="lede">Nearly everything known about electrons came from watching how atoms absorb and release light. Modern atomic theory grew out of studying radiation meeting matter.</p>
+
+    <div class="lab">
+      <h3>Wavelength and frequency</h3>
+      <svg viewBox="0 0 620 170" style="width:100%;height:auto" aria-hidden="true">
+        <line x1="20" y1="90" x2="600" y2="90" stroke="#1a3554" stroke-dasharray="3 5"/>
+        <polyline id="waveLine" fill="none" stroke="#5cd3f5" stroke-width="2.5" points=""/>
+        <g id="waveMark" stroke="#ff9052" stroke-width="1.5">
+          <line id="mk1" x1="20" y1="30" x2="20" y2="150"/>
+          <line id="mk2" x1="120" y1="30" x2="120" y2="150"/>
+        </g>
+        <text id="lamLabel" x="70" y="24" fill="#ff9052" font-size="13" text-anchor="middle" font-family="IBM Plex Mono">λ</text>
+      </svg>
+      <div class="slider-row">
+        <label for="lam">Wavelength</label>
+        <input type="range" id="lam" min="380" max="750" value="520" step="5">
+        <span class="readout" id="lamOut">520 nm</span>
+      </div>
+      <table class="data" style="margin-top:10px">
+        <tr><th>Frequency ν = c / λ</th><th>Photon energy E = hν</th><th>Region</th></tr>
+        <tr><td class="readout" id="freqOut"></td><td class="readout" id="enOut"></td><td class="readout" id="colOut"></td></tr>
+      </table>
+      <p class="note">Shortening the wavelength packs more cycles into each second, so frequency rises — and with it, energy. Stretching the wavelength does the reverse.</p>
+    </div>
+
+    <div class="paper">
+      <h3>The relationships</h3>
+      <p>Wavelength (λ) is the distance between two crests. Frequency (ν) is the number of cycles passing a point each second. Multiplying them gives the wave's speed, and for light in a vacuum that speed is fixed:</p>
+      <div class="eq">c = νλ &nbsp;&nbsp; c = 2.998 × 10⁸ m/s</div>
+      <p>Because c never changes, λ and ν are locked together: if one goes up the other must come down. Visible light runs from about 400 nm (violet) to 750 nm (red).</p>
+    </div>
+
+    <div class="paper">
+      <h3>Energy arrives in packets</h3>
+      <p>Planck found that atoms cannot absorb or release just any amount of energy. Energy comes in fixed minimum amounts called quanta, and the size of each quantum depends on frequency:</p>
+      <div class="eq">ΔE = hν &nbsp;&nbsp; h = 6.626 × 10⁻³⁴ J·s</div>
+      <p>The photoelectric effect confirmed it. Shining light on a metal ejects electrons only above a threshold frequency — dim light of the right frequency works, while intense light of too low a frequency does nothing. That behavior fits particles of light, each carrying one quantum of energy, rather than a continuous wave. Those particles are photons.</p>
+    </div>
+
+    <div class="check" data-check>
+      <div class="qlabel">CHECK</div>
+      <p class="q">Blue light has a shorter wavelength than red light. Compared to a red photon, a blue photon carries:</p>
+      <div class="opts">
+        <button data-correct data-fb="Correct. Shorter wavelength means higher frequency, and E = hν rises with frequency.">More energy</button>
+        <button data-fb="Shorter wavelength means higher frequency, and higher frequency means more energy, not less.">Less energy</button>
+        <button data-fb="Energy depends on frequency, and the two colors have different frequencies.">The same energy</button>
+      </div>
+      <p class="fb"></p>
+    </div>
+    <div class="lessonnav"><button class="btn" data-go="l3">Back</button><button class="btn primary" data-go="l5">Next: Coulomb's law</button></div>
+  </section>
+
+  <!-- ===================== L5 ===================== -->
+  <section data-view="l5" data-lesson="5">
+    <div class="crumb">LESSON 05</div>
+    <h1>Coulomb's law</h1>
+    <p class="lede">One question sits underneath every trend in this unit: how strongly does the nucleus hold on to a particular electron?</p>
+
+    <div class="paper">
+      <h3>Why electrons stay</h3>
+      <p>A nucleus is positive and an electron is negative, so they attract. Two charges of the same sign repel instead. The strength of that pull or push depends on only two things: how big the charges are, and how far apart they sit.</p>
+    </div>
+
+    <div class="lab">
+      <h3>Charge and distance</h3>
+      <div class="coul" id="coul">
+        <div class="fline" id="fline" style="width:120px"></div>
+        <div class="nuc" id="nuc">+1</div>
+        <div class="el" id="elDot" style="left:180px"></div>
+      </div>
+      <div class="slider-row">
+        <label for="qs">Nuclear charge</label>
+        <input type="range" id="qs" min="1" max="10" value="1">
+        <span class="readout" id="qOut">+1</span>
+      </div>
+      <div class="slider-row">
+        <label for="rs">Distance</label>
+        <input type="range" id="rs" min="60" max="300" value="180">
+        <span class="readout" id="rOut">180 pm</span>
+      </div>
+      <p class="readout" style="font-size:1.1rem">Relative force of attraction: <span id="fOut">1.00</span></p>
+      <p class="note">Distance is squared in the denominator, so it dominates. Doubling the charge doubles the force; doubling the distance cuts it to a quarter.</p>
+    </div>
+
+    <div class="paper">
+      <h3>The equation</h3>
+      <div class="eq">F = k · q₁q₂ / r²</div>
+      <table class="data">
+        <tr><td><b>F</b></td><td>Force of attraction or repulsion</td></tr>
+        <tr><td><b>k</b></td><td>A constant</td></tr>
+        <tr><td><b>q₁, q₂</b></td><td>The charges on the two bodies</td></tr>
+        <tr><td><b>r</b></td><td>The distance between them</td></tr>
+      </table>
+      <p>Force increases when the charges get larger, and decreases when the distance grows. Opposite charges give attraction; like charges give repulsion.</p>
+    </div>
+
+    <div class="check" data-check>
+      <div class="qlabel">CHECK</div>
+      <p class="q">If the distance between a nucleus and an electron is doubled and nothing else changes, the force of attraction becomes:</p>
+      <div class="opts">
+        <button data-fb="Distance appears as r², not r, so the change is larger than half.">Half as strong</button>
+        <button data-correct data-fb="Correct. Squaring the doubled distance gives 4 in the denominator, so the force drops to one quarter.">One quarter as strong</button>
+        <button data-fb="Increasing distance always weakens attraction.">Twice as strong</button>
+      </div>
+      <p class="fb"></p>
+    </div>
+    <div class="lessonnav"><button class="btn" data-go="l4">Back</button><button class="btn primary" data-go="l6">Next: Effective nuclear charge</button></div>
+  </section>
+
+  <!-- ===================== L6 ===================== -->
+  <section data-view="l6" data-lesson="6">
+    <div class="crumb">LESSON 06</div>
+    <h1>Effective nuclear charge</h1>
+    <p class="lede">Sodium has 11 protons. Its outermost electron does not behave as though it is being pulled by 11 protons. Something is getting in the way.</p>
+
+    <div class="paper">
+      <h3>Shielding</h3>
+      <p>Between the outer electron and the nucleus sit the inner electrons. They are negative, so they push the outer electron away, partly cancelling the nuclear pull. The outer electron ends up feeling a reduced charge.</p>
+    </div>
+
+    <div class="lab">
+      <h3>What the outer electron sees</h3>
+      <svg viewBox="0 0 560 220" style="width:100%;height:auto" role="img" aria-label="Diagram showing inner electrons shielding an outer electron from the nucleus">
+        <circle cx="120" cy="110" r="30" fill="#ff9052"/>
+        <text x="120" y="116" text-anchor="middle" font-size="15" fill="#20130a" font-family="IBM Plex Mono">+11</text>
+        <circle cx="230" cy="60" r="9" fill="#5cd3f5"/><circle cx="230" cy="110" r="9" fill="#5cd3f5"/><circle cx="230" cy="160" r="9" fill="#5cd3f5"/>
+        <circle cx="290" cy="85" r="9" fill="#5cd3f5"/><circle cx="290" cy="135" r="9" fill="#5cd3f5"/>
+        <text x="258" y="196" fill="#93a9c2" font-size="12" text-anchor="middle" font-family="DM Sans">inner electrons push outward</text>
+        <circle cx="460" cy="110" r="12" fill="#fff"/>
+        <text x="460" y="70" fill="#fff" font-size="12" text-anchor="middle" font-family="DM Sans">outer electron</text>
+        <path d="M150 110 L430 110" stroke="#ff9052" stroke-width="2" marker-end="url(#ar)"/>
+        <path d="M300 110 L360 110" stroke="#5cd3f5" stroke-width="6" opacity=".25"/>
+        <defs><marker id="ar" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto"><path d="M0 0 L8 4 L0 8 z" fill="#ff9052"/></marker></defs>
+      </svg>
+      <p class="note">The full +11 pull leaves the nucleus, but the inner electrons cancel most of it before it reaches the outer electron. What survives is the effective nuclear charge.</p>
+    </div>
+
+    <div class="paper">
+      <h3>The equation</h3>
+      <div class="eq">Z<sub>eff</sub> = Z − S</div>
+      <p><b>Z</b> is the number of protons. <b>S</b> is the shielding contributed by the other electrons. <b>Z<sub>eff</sub></b> is what the electron in question actually feels. A rough estimate treats S as the number of core electrons, so sodium's valence electron feels about 11 − 10 = +1.</p>
+    </div>
+
+    <div class="lab">
+      <h3>Slater's rules — a closer estimate</h3>
+      <p class="note">Slater's rules assign each other electron a shielding value based on where it sits relative to the electron being studied. The electron itself is never counted — nothing shields an electron from itself.</p>
+      <table class="data" style="margin-top:14px">
+        <tr><th>Position of the other electron</th><th>Shielding contributed</th></tr>
+        <tr><td>Same group as the electron studied</td><td>0.35 each (0.30 in 1s)</td></tr>
+        <tr><td>One shell inside (n − 1)</td><td>0.85 each</td></tr>
+        <tr><td>Two or more shells inside</td><td>1.00 each</td></tr>
+      </table>
+      <p class="note">Groups are written as (1s)(2s,2p)(3s,3p)(3d)(4s,4p)(4d)(4f)(5s,5p). Electrons in higher groups than the one studied contribute nothing.</p>
+      <div class="key" style="background:rgba(255,144,82,.12);margin-top:16px">
+        <p style="color:#ffd0b0"><strong>Separate rule for d and f electrons.</strong> When the electron studied is in a d or f sublevel, every electron in a group to its left counts as a full 1.00 — the 0.85 tier does not apply.</p>
+      </div>
+    </div>
+
+    <div class="lab">
+      <h3>Calculate it</h3>
+      <div class="ctrl">
+        <label for="slEl" class="note">Element</label>
+        <select id="slEl"></select>
+        <span class="note">then select the electron to study</span>
+      </div>
+      <div class="chipset" id="slChips"></div>
+      <div class="calc-out" id="slOut">Select an orbital above.</div>
+    </div>
+
+    <div class="check" data-check>
+      <div class="qlabel">CHECK</div>
+      <p class="q">Across a period, protons are added while electrons go into the same shell. What happens to Z<sub>eff</sub> for the outer electrons?</p>
+      <div class="opts">
+        <button data-correct data-fb="Correct. Electrons in the same shell shield each other poorly (0.35 each), so Z grows faster than S and Z_eff rises.">It increases</button>
+        <button data-fb="Shielding rises only slightly within a shell, while the proton count rises by a full unit each time.">It decreases</button>
+        <button data-fb="Z increases by 1 per element while S increases by only about 0.35, so the difference grows.">It stays constant</button>
+      </div>
+      <p class="fb"></p>
+    </div>
+    <div class="lessonnav"><button class="btn" data-go="l5">Back</button><button class="btn primary" data-go="l7">Next: Periodic trends</button></div>
+  </section>
+
+  <!-- ===================== L7 ===================== -->
+  <section data-view="l7" data-lesson="7">
+    <div class="crumb">LESSON 07</div>
+    <h1>Periodic trends</h1>
+    <p class="lede">The table's patterns are not coincidences. Every one of them comes from three quantities: nuclear charge, distance, and shielding.</p>
+
+    <div class="lab">
+      <h3>Trends across periods 1–4</h3>
+      <div class="trendbtns" id="trendBtns">
+        <button class="btn sel" data-trend="radius">Atomic radius</button>
+        <button class="btn" data-trend="ie">Ionization energy</button>
+        <button class="btn" data-trend="ea">Electron affinity</button>
+        <button class="btn" data-trend="en">Electronegativity</button>
+      </div>
+      <div class="ptwrap"><div class="pt" id="pt"></div></div>
+      <div class="arrows" id="trendArrows"></div>
+      <p class="note" id="trendNote" style="margin-top:12px"></p>
+    </div>
+
+    <div class="paper">
+      <h3>Why radius increases down a group</h3>
+      <p>Each step down adds a new energy level. The outermost electrons sit in a shell further from the nucleus, with more inner electrons shielding them. Greater distance and greater shielding both weaken the attraction, so the atom is larger.</p>
+      <h3>Why radius decreases across a period</h3>
+      <p>Moving right adds protons, but the added electrons go into the same shell where they shield each other poorly. The nucleus pulls harder on every electron, drawing the whole cloud inward.</p>
+      <h3>Why ionization energy increases across a period</h3>
+      <p>Ionization energy is the energy needed to remove an electron from a gaseous atom in its ground state. A stronger effective nuclear charge and a smaller radius mean the electron is held more tightly, so more energy is required to take it away. Each successive removal costs more than the last: IE₁ &lt; IE₂ &lt; IE₃.</p>
+      <h3>Electron affinity and electronegativity</h3>
+      <p>Electron affinity is the energy released when an electron is added to a neutral gaseous atom, forming a negative ion. It generally becomes more exothermic left to right across a row, with two notable exceptions to that trend. Electronegativity measures how strongly an atom pulls shared electrons away from another atom, and follows a similar direction to ionization energy.</p>
+    </div>
+
+    <div class="check" data-check>
+      <div class="qlabel">CHECK</div>
+      <p class="q">Which atom has the larger radius: sodium or chlorine?</p>
+      <div class="opts">
+        <button data-correct data-fb="Correct. Both fill shell 3, but chlorine has 6 more protons pulling that shell inward, so sodium is larger.">Sodium</button>
+        <button data-fb="Chlorine sits further right in the same period, where a higher nuclear charge contracts the shell.">Chlorine</button>
+        <button data-fb="They are in the same period but have very different nuclear charges.">They are the same</button>
+      </div>
+      <p class="fb"></p>
+    </div>
+    <div class="lessonnav"><button class="btn" data-go="l6">Back</button><button class="btn primary" data-go="l8">Next: Ions &amp; ionic size</button></div>
+  </section>
+
+  <!-- ===================== L8 ===================== -->
+  <section data-view="l8" data-lesson="8">
+    <div class="crumb">LESSON 08</div>
+    <h1>Ions &amp; ionic size</h1>
+    <p class="lede">An atom becomes an ion when its electron count stops matching its proton count. The proton count never changes — that would make it a different element.</p>
+
+    <div class="lab">
+      <h3>Gaining and losing electrons</h3>
+      <div class="shells">
+        <div>
+          <div class="ionsym" id="ionSym">Na</div>
+          <p class="note" id="ionState"></p>
+        </div>
+        <div>
+          <p class="note" style="margin-bottom:6px">Protons</p>
+          <div class="dotgrid" id="pGrid"></div>
+          <p class="note" style="margin:12px 0 6px">Electrons</p>
+          <div class="dotgrid" id="eGrid"></div>
+        </div>
+      </div>
+      <div class="ctrl">
+        <button class="btn" id="ionMinus">Remove an electron</button>
+        <button class="btn" id="ionPlus">Add an electron</button>
+        <button class="btn" id="ionReset">Reset to neutral</button>
+      </div>
+      <p class="note">Removing a negative electron leaves an excess of protons, so the ion is positive. Adding one gives an excess of electrons, so the ion is negative.</p>
+    </div>
+
+    <div class="paper">
+      <h3>Size follows the electron count</h3>
+      <p>A cation is smaller than its parent atom. Losing an electron reduces the repulsion among the remaining electrons and often empties the outermost shell entirely, so the rest are drawn in tighter.</p>
+      <p>An anion is larger than its parent atom. Extra electrons crowd the same shell, repel each other, and push the cloud outward while the nuclear charge stays the same.</p>
+      <div class="eq">cation &lt; neutral atom &lt; anion</div>
+      <p>Ionic size depends on three things: the nuclear charge, the number of electrons, and the orbitals those electrons occupy.</p>
+    </div>
+
+    <div class="lab">
+      <h3>Isoelectronic species — same electrons, different nuclei</h3>
+      <div class="iso" id="isoRow"></div>
+      <p class="note">Every species here has 10 electrons. The only difference is the number of protons. More protons pull the same ten electrons in harder, so the radius shrinks steadily from left to right. Mg²⁺ is the smallest, O²⁻ the largest.</p>
+    </div>
+
+    <div class="check" data-check>
+      <div class="qlabel">CHECK</div>
+      <p class="q">F⁻ and Na⁺ both have 10 electrons. Which is smaller?</p>
+      <div class="opts">
+        <button data-fb="Fluoride has only 9 protons holding those 10 electrons, giving a weaker pull.">F⁻</button>
+        <button data-correct data-fb="Correct. Sodium's 11 protons pull the same 10 electrons more strongly than fluorine's 9, so Na⁺ is the smaller ion.">Na⁺</button>
+        <button data-fb="Equal electron counts do not mean equal size — the nuclear charges differ.">Identical size</button>
+      </div>
+      <p class="fb"></p>
+    </div>
+    <div class="lessonnav"><button class="btn" data-go="l7">Back</button><button class="btn primary" data-go="l9">Next: Metals &amp; nonmetals</button></div>
+  </section>
+
+  <!-- ===================== L9 ===================== -->
+  <section data-view="l9" data-lesson="9">
+    <div class="crumb">LESSON 09</div>
+    <h1>Metals &amp; nonmetals</h1>
+    <p class="lede">Whether an element gives electrons away or takes them decides almost everything else about it — how it looks, how it conducts, and what its oxide does in water.</p>
+
+    <div class="split">
+      <div>
+        <h3 style="color:var(--orange)">Metals</h3>
+        <ul>
+          <li>Conduct heat and electricity well</li>
+          <li>Malleable — can be hammered into sheets</li>
+          <li>Ductile — can be drawn into wire</li>
+          <li>Shiny lustre, various colors</li>
+          <li>Tend to lose electrons and form cations in aqueous solution</li>
+          <li>Most metal oxides are ionic solids that are basic</li>
+        </ul>
+      </div>
+      <div>
+        <h3 style="color:var(--cyan)">Nonmetals</h3>
+        <ul>
+          <li>Poor conductors</li>
+          <li>Usually brittle; some hard, some soft</li>
+          <li>No metallic lustre</li>
+          <li>Tend to gain electrons, reaching a noble gas configuration</li>
+          <li>Form anions or oxyanions in aqueous solution</li>
+          <li>Most nonmetal oxides are molecular substances that form acidic solutions</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="key" style="margin-top:22px">
+      <p><strong>The oxide rule is the one to remember.</strong> Metal oxide plus water gives a base; nonmetal oxide plus water gives an acid. It links an element's position on the table directly to the behavior of its compounds.</p>
+    </div>
+
+    <div class="paper">
+      <h3>Metal charges worth memorizing</h3>
+      <p>Most main-group metals take a predictable charge, but these four come up constantly and do not follow an obvious pattern:</p>
+      <div class="eq">Al³⁺ &nbsp; Zn²⁺ &nbsp; Cd²⁺ &nbsp; Ag⁺</div>
+      <h3>A metal oxide in acid</h3>
+      <p>Scandium oxide is basic, so it reacts with nitric acid to give a salt and water:</p>
+      <div class="eq">Sc₂O₃ + 6 HNO₃ → 2 Sc(NO₃)₃ + 3 H₂O</div>
+    </div>
+
+    <div class="check" data-check>
+      <div class="qlabel">CHECK</div>
+      <p class="q">Sulfur dioxide dissolves in water. The resulting solution is most likely:</p>
+      <div class="opts">
+        <button data-correct data-fb="Correct. Sulfur is a nonmetal, and nonmetal oxides form acidic solutions.">Acidic</button>
+        <button data-fb="Basic solutions come from metal oxides. Sulfur is a nonmetal.">Basic</button>
+        <button data-fb="Oxides generally shift the pH one way or the other depending on which side of the table the element sits.">Neutral</button>
+      </div>
+      <p class="fb"></p>
+    </div>
+    <div class="lessonnav"><button class="btn" data-go="l8">Back</button><button class="btn primary" data-go="l10">Next: Chemistry calculations</button></div>
+  </section>
+
+  <!-- ===================== L10 ===================== -->
+  <section data-view="l10" data-lesson="10">
+    <div class="crumb">LESSON 10</div>
+    <h1>Chemistry calculations</h1>
+    <p class="lede">Atoms are far too small to count one at a time, so chemistry counts them in bulk — and then converts that count into a mass that a balance can read.</p>
+
+    <div class="paper">
+      <h3>The mole is a counting unit</h3>
+      <p>A dozen is 12 of something. A mole is a much larger fixed number of something:</p>
+      <div class="eq">1 mole = 6.022 × 10²³ particles</div>
+      <p>Molar mass connects that count to mass. It is the mass of one mole of a substance, in grams, and it is the number printed on the periodic table.</p>
+      <div class="eq">MM = m / n</div>
+    </div>
+
+    <div class="lab">
+      <h3>Dimensional analysis</h3>
+      <p class="note">Multiply the known quantity by a conversion factor arranged so the unwanted unit sits in the denominator and cancels.</p>
+      <div class="calc-out" style="margin:14px 0">0.85 mol C  ×  12.0 g C
+                    ─────────  =  10.2 g C
+                     1 mol C</div>
+      <div class="ctrl">
+        <input type="number" id="molIn" value="0.85" step="0.01" style="width:110px" aria-label="Amount in moles">
+        <span class="note">mol of</span>
+        <select id="molSub"></select>
+        <button class="btn primary" id="molGo">Convert to grams</button>
+      </div>
+      <div class="calc-out" id="molOut">Enter an amount and convert.</div>
+    </div>
+
+    <div class="paper">
+      <h3>Empirical formula — the simplest ratio</h3>
+      <p>A molecular formula counts the atoms in one molecule. An empirical formula reduces that count to its simplest whole-number ratio. Glucose has 6 carbons, 12 hydrogens and 6 oxygens; dividing every subscript by 6 gives:</p>
+      <div class="eq">C₆H₁₂O₆ → CH₂O</div>
+      <p>Going the other way needs the molar mass. Divide the compound's molar mass by the empirical formula's mass, then multiply every subscript by that whole number.</p>
+    </div>
+
+    <div class="lab">
+      <h3>Percent composition</h3>
+      <p class="note">The fraction of a compound's mass contributed by one element.</p>
+      <div class="eq" style="font-size:1.05rem">% element = (mass of element ÷ molar mass of compound) × 100</div>
+      <div class="ctrl">
+        <select id="pcComp"></select>
+        <select id="pcEl"></select>
+      </div>
+      <div class="calc-out" id="pcOut"></div>
+    </div>
+
+    <div class="check" data-check>
+      <div class="qlabel">CHECK</div>
+      <p class="q">Which of these is an empirical formula?</p>
+      <div class="opts">
+        <button data-fb="Both subscripts divide by 2, giving HO. That is a molecular formula.">H₂O₂</button>
+        <button data-correct data-fb="Correct. The ratio 1 : 2 : 1 cannot be reduced any further, so CH₂O is already empirical.">CH₂O</button>
+        <button data-fb="Every subscript divides by 6, reducing to CH₂O.">C₆H₁₂O₆</button>
+      </div>
+      <p class="fb"></p>
+    </div>
+    <div class="lessonnav"><button class="btn" data-go="l9">Back</button><button class="btn primary" data-go="final">End-of-unit challenge</button></div>
+  </section>
+
+  <!-- ===================== FINAL ===================== -->
+  <section data-view="final">
+    <div class="crumb">CHALLENGE</div>
+    <h1>Can the atom be explained?</h1>
+    <p class="lede">Eight questions covering the whole unit. The last one asks for reasoning rather than a number.</p>
+
+    <div class="check" data-check>
+      <div class="qlabel">01</div>
+      <p class="q">An ion has 12 protons and 10 electrons. What is its charge?</p>
+      <div class="opts">
+        <button data-fb="Two electrons are missing, not gained, so the charge is positive.">2−</button>
+        <button data-correct data-fb="Correct. 12 positives and 10 negatives leave a net charge of 2+. This is Mg²⁺.">2+</button>
+        <button data-fb="The counts differ by two, so the ion cannot be neutral.">0</button>
+      </div>
+      <p class="fb"></p>
+    </div>
+
+    <div class="check" data-check>
+      <div class="qlabel">02</div>
+      <p class="q">Why does an outer electron experience shielding?</p>
+      <div class="opts">
+        <button data-correct data-fb="Correct. Inner electrons are negative and lie between the nucleus and the outer electron, cancelling part of the nuclear pull.">Inner electrons repel it and cancel part of the nuclear attraction</button>
+        <button data-fb="Neutrons carry no charge, so they neither attract nor repel electrons.">Neutrons block the nuclear charge</button>
+        <button data-fb="Distance weakens attraction, but shielding specifically refers to the effect of other electrons.">It is too far from the nucleus to be attracted at all</button>
+      </div>
+      <p class="fb"></p>
+    </div>
+
+    <div class="check" data-check>
+      <div class="qlabel">03</div>
+      <p class="q">Estimate Z<sub>eff</sub> for a valence electron in magnesium (Z = 12) using core electrons as the shielding.</p>
+      <div class="opts">
+        <button data-fb="That would mean no shielding at all from the 10 core electrons.">+12</button>
+        <button data-correct data-fb="Correct. 12 protons minus 10 core electrons gives roughly +2.">+2</button>
+        <button data-fb="Check the core count: magnesium has a neon core of 10 electrons.">+10</button>
+      </div>
+      <p class="fb"></p>
+    </div>
+
+    <div class="check" data-check>
+      <div class="qlabel">04</div>
+      <p class="q">Which atom has the larger radius: potassium or calcium?</p>
+      <div class="opts">
+        <button data-correct data-fb="Correct. Both begin shell 4, but calcium has one more proton pulling that shell inward, so potassium is larger.">Potassium</button>
+        <button data-fb="Calcium sits one place to the right, with a higher nuclear charge contracting the same shell.">Calcium</button>
+        <button data-fb="Neighboring elements in a period differ in nuclear charge, so their radii differ too.">The same</button>
+      </div>
+      <p class="fb"></p>
+    </div>
+
+    <div class="check" data-check>
+      <div class="qlabel">05</div>
+      <p class="q">Which has the higher first ionization energy: lithium or fluorine?</p>
+      <div class="opts">
+        <button data-fb="Lithium's single valence electron is loosely held and easy to remove.">Lithium</button>
+        <button data-correct data-fb="Correct. Fluorine's greater nuclear charge and smaller radius hold its electrons far more tightly.">Fluorine</button>
+        <button data-fb="They sit at opposite ends of the same period, so their nuclear charges are very different.">Equal</button>
+      </div>
+      <p class="fb"></p>
+    </div>
+
+    <div class="check" data-check>
+      <div class="qlabel">06</div>
+      <p class="q">Which is the correct ground-state configuration for sulfur (16 electrons)?</p>
+      <div class="opts">
+        <button data-fb="That accounts for only 14 electrons.">1s² 2s² 2p⁶ 3s² 3p²</button>
+        <button data-correct data-fb="Correct. The superscripts sum to 16, and every lower sublevel is filled first.">1s² 2s² 2p⁶ 3s² 3p⁴</button>
+        <button data-fb="Skipping 3s breaks the Aufbau principle — the lower sublevel fills first.">1s² 2s² 2p⁶ 3p⁶</button>
+      </div>
+      <p class="fb"></p>
+    </div>
+
+    <div class="check" data-check>
+      <div class="qlabel">07</div>
+      <p class="q">Water is H₂O, with a molar mass of 18.0 g/mol. What is the percent composition of oxygen? (O = 16.0)</p>
+      <div class="opts">
+        <button data-fb="That is closer to the hydrogen fraction, which is about 11%.">11%</button>
+        <button data-correct data-fb="Correct. 16.0 ÷ 18.0 × 100 = 88.9%.">89%</button>
+        <button data-fb="Percent composition compares masses, not atom counts — oxygen is much heavier than hydrogen.">33%</button>
+      </div>
+      <p class="fb"></p>
+    </div>
+
+    <div class="final-q">
+      <div class="qn">08 — EXPLANATION</div>
+      <p style="margin:8px 0 14px"><b>Using Coulomb's law, explain why the first ionization energy of magnesium is higher than that of sodium.</b></p>
+      <button class="btn" id="revealModel">Show a model answer</button>
+      <div id="modelAns" style="display:none;margin-top:16px;color:#c8dbef">
+        <p>Sodium has 11 protons and magnesium has 12, and both hold their valence electrons in the third shell. Because those electrons occupy the same shell, they shield each other weakly, so magnesium's extra proton raises the effective nuclear charge felt by its valence electron rather than being cancelled out.</p>
+        <p>Coulomb's law says the force of attraction rises as charge rises and falls as distance grows. Magnesium's larger effective charge acts over a slightly shorter distance, since the stronger pull also contracts the atom. Both factors increase the attraction between nucleus and valence electron.</p>
+        <p style="margin-bottom:0">A more strongly held electron takes more energy to remove, so magnesium has the higher first ionization energy.</p>
+      </div>
+    </div>
+
+    <div class="key" style="margin-top:22px">
+      <p><strong>The through-line.</strong> Charge, distance, and shielding explain radius, ionization energy, electron affinity, electronegativity, and ionic size. Every trend in this unit is the same argument applied to a different question.</p>
+    </div>
+    <div class="lessonnav"><button class="btn" data-go="l10">Back to lesson 10</button><button class="btn" data-go="dash">Unit path</button></div>
+  </section>
+
+  </main>
+</div>
+
+<script>
+/* ---------------- navigation ---------------- */
+const views = document.querySelectorAll('section[data-view]');
+const railBtns = document.querySelectorAll('#rail button');
+function go(id){
+  views.forEach(v=>v.classList.toggle('on', v.dataset.view===id));
+  railBtns.forEach(b=>b.classList.toggle('active', b.dataset.go===id));
+  window.scrollTo({top:0,behavior:'instant' in window ? 'auto':'auto'});
+}
+document.addEventListener('click',e=>{
+  const t=e.target.closest('[data-go]');
+  if(t){go(t.dataset.go);}
+});
+
+/* ---------------- lesson path ---------------- */
+const LESSONS=[
+  ['What is an atom?','Particles, charge, and the scale of the nucleus','l1'],
+  ['Inside the atom','How the model was built, isotopes, mass spectra','l2'],
+  ['Electron configuration','Levels, sublevels, orbitals, and the filling rules','l3'],
+  ['Light &amp; energy','Wavelength, frequency, quanta, photons','l4'],
+  ["Coulomb's law",'What decides the strength of attraction','l5'],
+  ['Effective nuclear charge','Shielding and Slater&rsquo;s rules','l6'],
+  ['Periodic trends','Radius, ionization energy, affinity, electronegativity','l7'],
+  ['Ions &amp; ionic size','Gaining and losing electrons; isoelectronic species','l8'],
+  ['Metals &amp; nonmetals','Properties, ions, and the behavior of oxides','l9'],
+  ['Chemistry calculations','Moles, molar mass, formulas, percent composition','l10']
+];
+const pathEl=document.getElementById('path');
+LESSONS.forEach((L,i)=>{
+  const b=document.createElement('button');
+  b.className='step';b.dataset.go=L[2];b.dataset.step=i+1;
+  b.innerHTML='<span class="num">'+String(i+1).padStart(2,'0')+'</span><span><b>'+L[0]+'</b><span class="sub">'+L[1]+'</span></span><span class="tag">not started</span>';
+  pathEl.appendChild(b);
+});
+
+/* ---------------- progress ---------------- */
+const done=new Set();
+function markDone(n){
+  if(!n||done.has(n))return;
+  done.add(n);
+  document.getElementById('pcount').textContent=done.size+' of 10 lessons';
+  document.getElementById('pbar').style.width=(done.size*10)+'%';
+  const step=pathEl.querySelector('[data-step="'+n+'"]');
+  if(step){step.classList.add('done');step.querySelector('.tag').textContent='complete';}
+  const rb=document.querySelector('#rail button[data-go="l'+n+'"]');
+  if(rb)rb.classList.add('done');
+}
+
+/* ---------------- checks ---------------- */
+document.querySelectorAll('[data-check]').forEach(box=>{
+  const fb=box.querySelector('.fb');
+  box.querySelectorAll('.opts button').forEach(btn=>{
+    btn.addEventListener('click',()=>{
+      const correct=btn.hasAttribute('data-correct');
+      btn.classList.add(correct?'right':'wrong');
+      fb.classList.add('show');
+      fb.innerHTML=(correct?'<b>Correct.</b> ':'<b>Not quite.</b> ')+btn.dataset.fb.replace(/^Correct\. /,'');
+      if(correct){
+        box.querySelectorAll('.opts button').forEach(b=>b.disabled=true);
+        const sec=box.closest('section');
+        if(sec&&sec.dataset.lesson)markDone(+sec.dataset.lesson);
+      }
+    });
+  });
+});
+
+/* ---------------- L2 timeline ---------------- */
+const TL=[
+  ['1803','Dalton','Matter is made of tiny indivisible spheres. Atoms of one element are identical to each other and different from those of every other element.'],
+  ['1904','Thomson','The discovery of the electron showed atoms contain smaller charged pieces. The plum pudding model placed electrons in a diffuse positive mass.'],
+  ['1911','Rutherford','Firing particles at gold foil, most passed straight through while a few bounced back. The atom must have a tiny, dense, positive nucleus and be mostly empty space.'],
+  ['1913','Bohr','Electrons occupy fixed energy levels around the nucleus, and light is emitted when an electron drops from one level to another. This explained atomic line spectra.'],
+  ['1926','Quantum mechanical model','Electrons are described by probability rather than paths. An orbital is a region where an electron is likely to be found. This is the model still in use.']
+];
+const tl=document.getElementById('tl'),tlD=document.getElementById('tlDetail'),tlDot=document.getElementById('tlDot');
+TL.forEach((t,i)=>{
+  const d=document.createElement('div');d.className='tl-item';
+  d.innerHTML='<button><span class="tl-year">'+t[0]+'</span><br><span class="tl-name">'+t[1]+'</span></button>';
+  d.querySelector('button').addEventListener('click',()=>selTL(i));
+  tl.appendChild(d);
+});
+function selTL(i){
+  tl.querySelectorAll('button').forEach((b,j)=>b.classList.toggle('sel',i===j));
+  tlD.innerHTML='<b>'+TL[i][0]+' · '+TL[i][1]+'</b><br>'+TL[i][2];
+  tlDot.style.left=(i*(100/TL.length)+6)+'%';
+}
+selTL(0);
+
+/* ---------------- L3 notation ---------------- */
+const NOTE_TXT={
+  n:'3 — the principal energy level. Larger numbers mean shells further from the nucleus.',
+  l:'p — the sublevel. A p sublevel contains 3 orbitals and holds up to 6 electrons.',
+  e:'5 — the number of electrons currently in that sublevel. Here p is one short of full.'
+};
+document.querySelectorAll('#notation button').forEach(b=>{
+  b.addEventListener('click',()=>{
+    document.querySelectorAll('#notation button').forEach(x=>x.classList.remove('sel'));
+    b.classList.add('sel');
+    document.getElementById('notationText').textContent=NOTE_TXT[b.dataset.part];
+  });
+});
+
+/* ---------------- L3 aufbau ---------------- */
+const AUF=[['1s',2],['2s',2],['2p',6],['3s',2],['3p',6],['4s',2]];
+let aufN=0;
+const aufEl=document.getElementById('aufbau');
+function drawAuf(){
+  aufEl.innerHTML='';let left=aufN;
+  AUF.forEach(([name,cap])=>{
+    const got=Math.max(0,Math.min(cap,left));left-=got;
+    const w=document.createElement('div');
+    w.innerHTML='<div class="obox" style="width:'+(cap*10+26)+'px">'+(got?got:'')+'</div><span class="obox-label">'+name+'<sup>'+cap+'</sup></span>';
+    const box=w.querySelector('.obox');
+    if(got===cap)box.style.background='rgba(92,211,245,.25)';
+    else if(got>0)box.style.background='rgba(92,211,245,.13)';
+    else box.style.opacity='.45';
+    aufEl.appendChild(w);
+  });
+  let s='',left2=aufN;
+  AUF.forEach(([name,cap])=>{const g=Math.max(0,Math.min(cap,left2));left2-=g;if(g)s+=name+'^'+g+' ';});
+  document.getElementById('aufOut').textContent=aufN+' electrons · '+(s||'—');
+}
+document.getElementById('aufAdd').onclick=()=>{aufN=Math.min(20,aufN+1);drawAuf();};
+document.getElementById('aufReset').onclick=()=>{aufN=0;drawAuf();};
+drawAuf();
+
+/* ---------------- L3 hund ---------------- */
+let hundN=0;
+function drawHund(){
+  const boxes=document.querySelectorAll('#hund .obox');
+  boxes.forEach((b,i)=>{
+    let n=0;
+    if(hundN>i)n=1;
+    if(hundN>i+3)n=2;
+    b.innerHTML=n===0?'':(n===1?'<span class="arr">&#8593;</span>':'<span class="arr">&#8593;</span><span class="arr">&#8595;</span>');
+  });
+  const out=document.getElementById('hundOut');
+  out.textContent=hundN+' of 6'+(hundN>0&&hundN<=3?' · one per orbital first':(hundN>3?' · pairing begins only now':''));
+}
+document.getElementById('hundAdd').onclick=()=>{hundN=Math.min(6,hundN+1);drawHund();};
+document.getElementById('hundReset').onclick=()=>{hundN=0;drawHund();};
+drawHund();
+
+/* ---------------- L4 wave ---------------- */
+const lam=document.getElementById('lam');
+function waveColor(nm){
+  if(nm<440)return '#8b6cff';if(nm<490)return '#4aa8ff';if(nm<510)return '#3fe0c0';
+  if(nm<580)return '#8ce05a';if(nm<645)return '#ffb44d';return '#ff6b6b';
+}
+function regionName(nm){
+  if(nm<450)return 'violet';if(nm<495)return 'blue';if(nm<570)return 'green';
+  if(nm<590)return 'yellow';if(nm<620)return 'orange';return 'red';
+}
+function drawWave(){
+  const nm=+lam.value;
+  const pxPer=nm*0.42;               // visual wavelength in svg units
+  let pts='';
+  for(let x=20;x<=600;x+=2){
+    const y=90-42*Math.sin(2*Math.PI*(x-20)/pxPer);
+    pts+=x+','+y.toFixed(1)+' ';
+  }
+  const line=document.getElementById('waveLine');
+  line.setAttribute('points',pts);
+  line.setAttribute('stroke',waveColor(nm));
+  document.getElementById('mk1').setAttribute('x1',20);document.getElementById('mk1').setAttribute('x2',20);
+  const m2=Math.min(600,20+pxPer);
+  document.getElementById('mk2').setAttribute('x1',m2);document.getElementById('mk2').setAttribute('x2',m2);
+  document.getElementById('lamLabel').setAttribute('x',(20+m2)/2);
+  const nu=2.998e8/(nm*1e-9), E=6.626e-34*nu;
+  document.getElementById('lamOut').textContent=nm+' nm';
+  document.getElementById('freqOut').textContent=(nu/1e14).toFixed(2)+' × 10¹⁴ Hz';
+  document.getElementById('enOut').textContent=(E*1e19).toFixed(2)+' × 10⁻¹⁹ J';
+  document.getElementById('colOut').textContent=regionName(nm);
+}
+lam.addEventListener('input',drawWave);drawWave();
+
+/* ---------------- L5 coulomb ---------------- */
+const qs=document.getElementById('qs'),rs=document.getElementById('rs');
+function drawCoul(){
+  const q=+qs.value,r=+rs.value;
+  document.getElementById('qOut').textContent='+'+q;
+  document.getElementById('rOut').textContent=r+' pm';
+  document.getElementById('nuc').textContent='+'+q;
+  document.getElementById('elDot').style.left=(r)+'px';
+  document.getElementById('fline').style.width=(r-40)+'px';
+  const F=(q*1)/Math.pow(r/180,2);
+  document.getElementById('fOut').textContent=F.toFixed(2);
+  document.getElementById('fline').style.height=Math.max(2,Math.min(14,F*2))+'px';
+}
+qs.addEventListener('input',drawCoul);rs.addEventListener('input',drawCoul);drawCoul();
+
+/* ---------------- L6 slater ---------------- */
+const ELEMENTS={
+  'O (Z=8)':{z:8,cfg:[['1s',2],['2s',2],['2p',4]]},
+  'Na (Z=11)':{z:11,cfg:[['1s',2],['2s',2],['2p',6],['3s',1]]},
+  'Cl (Z=17)':{z:17,cfg:[['1s',2],['2s',2],['2p',6],['3s',2],['3p',5]]},
+  'Fe (Z=26)':{z:26,cfg:[['1s',2],['2s',2],['2p',6],['3s',2],['3p',6],['3d',6],['4s',2]]},
+  'Sr (Z=38)':{z:38,cfg:[['1s',2],['2s',2],['2p',6],['3s',2],['3p',6],['3d',10],['4s',2],['4p',6],['5s',2]]}
+};
+const sup={0:'⁰',1:'¹',2:'²',3:'³',4:'⁴',5:'⁵',6:'⁶',7:'⁷',8:'⁸',9:'⁹'};
+function supStr(n){return String(n).split('').map(d=>sup[d]).join('');}
+function gkey(orb){
+  const n=+orb[0],l=orb[1];
+  return n*10+(l==='s'||l==='p'?0:l==='d'?1:2);
+}
+function glabel(k){
+  const n=Math.floor(k/10),t=k%10;
+  if(t===0)return n===1?'(1s)':'('+n+'s,'+n+'p)';
+  return t===1?'('+n+'d)':'('+n+'f)';
+}
+function slater(el,target){
+  const z=ELEMENTS[el].z, cfg=ELEMENTS[el].cfg;
+  const tg=gkey(target), tn=+target[0], tl=target[1];
+  const dfMode=(tl==='d'||tl==='f');
+  const groups={};
+  cfg.forEach(([o,c])=>{const k=gkey(o);groups[k]=(groups[k]||0)+c;});
+  const rows=[];let S=0;
+  Object.keys(groups).map(Number).sort((a,b)=>a-b).forEach(k=>{
+    const count=groups[k];
+    let n=0,f=0,why='';
+    if(k===tg){n=count-1;f=(tn===1&&tl==='s')?0.30:0.35;why='same group (the electron itself is not counted)';}
+    else if(dfMode){ if(k<tg){n=count;f=1.00;why='inside a d/f electron — counts fully';} else return; }
+    else { const gn=Math.floor(k/10);
+      if(gn===tn-1&&k<tg){n=count;f=0.85;why='one shell inside';}
+      else if(gn<=tn-2){n=count;f=1.00;why='two or more shells inside';}
+      else return; }
+    if(n<=0)return;
+    S+=n*f;
+    rows.push(glabel(k).padEnd(10)+String(n).padStart(2)+' × '+f.toFixed(2)+' = '+(n*f).toFixed(2).padStart(6)+'   '+why);
+  });
+  return {rows,S,z,zeff:z-S};
+}
+const slSel=document.getElementById('slEl'),slChips=document.getElementById('slChips'),slOut=document.getElementById('slOut');
+Object.keys(ELEMENTS).forEach(k=>{const o=document.createElement('option');o.textContent=k;slSel.appendChild(o);});
+slSel.value='Na (Z=11)';
+function buildChips(){
+  slChips.innerHTML='';
+  ELEMENTS[slSel.value].cfg.forEach(([o,c])=>{
+    const b=document.createElement('button');b.className='chip';b.dataset.orb=o;
+    b.innerHTML=o+'<sup>'+supStr(c)+'</sup>';
+    b.onclick=()=>{
+      slChips.querySelectorAll('.chip').forEach(x=>x.classList.remove('sel'));
+      b.classList.add('sel');
+      const r=slater(slSel.value,o);
+      slOut.textContent=
+        'Studying one electron in '+o+'\n\n'+
+        r.rows.join('\n')+
+        '\n'+'─'.repeat(46)+
+        '\nS    = '+r.S.toFixed(2)+
+        '\nZeff = '+r.z+' − '+r.S.toFixed(2)+' = '+r.zeff.toFixed(2);
+    };
+    slChips.appendChild(b);
+  });
+  slOut.textContent='Select an orbital above.';
+}
+slSel.onchange=buildChips;buildChips();
+
+/* ---------------- L7 periodic table ---------------- */
+const PT=[
+ ['H',1,1,1],['He',2,1,18],
+ ['Li',3,2,1],['Be',4,2,2],['B',5,2,13],['C',6,2,14],['N',7,2,15],['O',8,2,16],['F',9,2,17],['Ne',10,2,18],
+ ['Na',11,3,1],['Mg',12,3,2],['Al',13,3,13],['Si',14,3,14],['P',15,3,15],['S',16,3,16],['Cl',17,3,17],['Ar',18,3,18],
+ ['K',19,4,1],['Ca',20,4,2],['Sc',21,4,3],['Ti',22,4,4],['V',23,4,5],['Cr',24,4,6],['Mn',25,4,7],['Fe',26,4,8],
+ ['Co',27,4,9],['Ni',28,4,10],['Cu',29,4,11],['Zn',30,4,12],['Ga',31,4,13],['Ge',32,4,14],['As',33,4,15],
+ ['Se',34,4,16],['Br',35,4,17],['Kr',36,4,18]
+];
+const ptEl=document.getElementById('pt');
+PT.forEach(([sym,z,row,col])=>{
+  const d=document.createElement('div');
+  d.className='el';d.style.gridRow=row;d.style.gridColumn=col;
+  d.dataset.row=row;d.dataset.col=col;
+  d.innerHTML='<span class="z">'+z+'</span><b>'+sym+'</b>';
+  ptEl.appendChild(d);
+});
+const TRENDS={
+  radius:{arrows:['increases down a group','increases right to left'],
+    note:'Radius grows with each new shell and shrinks as nuclear charge rises across a period. Darker cells are larger atoms.',
+    v:(r,c)=>((r-1)/3)*0.55+((18-c)/17)*0.45},
+  ie:{arrows:['increases up a group','increases left to right'],
+    note:'Tightly held electrons take more energy to remove. Darker cells have higher ionization energy.',
+    v:(r,c)=>((4-r)/3)*0.45+((c-1)/17)*0.55},
+  ea:{arrows:['generally increases up a group','generally increases left to right'],
+    note:'Electron affinity follows a similar direction to ionization energy, with notable exceptions in the noble gases and group 2.',
+    v:(r,c)=>((4-r)/3)*0.4+((c-1)/17)*0.6},
+  en:{arrows:['increases up a group','increases left to right'],
+    note:'Electronegativity peaks at the top right of the table, excluding the noble gases, which rarely bond.',
+    v:(r,c)=>((4-r)/3)*0.45+((c-1)/17)*0.55}
+};
+function paint(t){
+  const T=TRENDS[t];
+  ptEl.querySelectorAll('.el').forEach(d=>{
+    const v=T.v(+d.dataset.row,+d.dataset.col);
+    d.style.background='rgba(92,211,245,'+(0.06+v*0.62).toFixed(3)+')';
+    d.style.color=v>0.62?'#04202c':'#cfe2f5';
+    d.querySelector('.z').style.color=v>0.62?'#0b4257':'#5f7c9b';
+  });
+  document.getElementById('trendArrows').innerHTML=T.arrows.map(a=>'<span>↗ '+a+'</span>').join('');
+  document.getElementById('trendNote').textContent=T.note;
+}
+document.querySelectorAll('#trendBtns .btn').forEach(b=>{
+  b.onclick=()=>{
+    document.querySelectorAll('#trendBtns .btn').forEach(x=>x.classList.remove('sel'));
+    b.classList.add('sel');paint(b.dataset.trend);
+  };
+});
+paint('radius');
+
+/* ---------------- L8 ions ---------------- */
+let eCount=11;const protons=11;
+function drawIon(){
+  const p=document.getElementById('pGrid'),e=document.getElementById('eGrid');
+  p.innerHTML='';e.innerHTML='';
+  for(let i=0;i<protons;i++){const d=document.createElement('span');d.className='dot p';p.appendChild(d);}
+  for(let i=0;i<eCount;i++){const d=document.createElement('span');d.className='dot';e.appendChild(d);}
+  const q=protons-eCount;
+  const sym=document.getElementById('ionSym');
+  sym.innerHTML='Na'+(q===0?'':'<sup>'+(Math.abs(q)>1?Math.abs(q):'')+(q>0?'+':'−')+'</sup>');
+  const st=document.getElementById('ionState');
+  st.textContent=q===0
+    ? '11 protons, 11 electrons — neutral atom.'
+    : q>0
+      ? '11 protons, '+eCount+' electrons — a cation with charge '+q+'+. Smaller than the neutral atom.'
+      : '11 protons, '+eCount+' electrons — an anion with charge '+Math.abs(q)+'−. Larger than the neutral atom.';
+}
+document.getElementById('ionMinus').onclick=()=>{eCount=Math.max(8,eCount-1);drawIon();};
+document.getElementById('ionPlus').onclick=()=>{eCount=Math.min(13,eCount+1);drawIon();};
+document.getElementById('ionReset').onclick=()=>{eCount=11;drawIon();};
+drawIon();
+
+const ISO=[['O²⁻',8],['F⁻',9],['Ne',10],['Na⁺',11],['Mg²⁺',12]];
+const isoRow=document.getElementById('isoRow');
+ISO.forEach(([s,p])=>{
+  const size=104-(p-8)*13;
+  const f=document.createElement('figure');
+  f.innerHTML='<div class="ball" style="width:'+size+'px;height:'+size+'px"></div><figcaption>'+s+'<small>'+p+' protons</small></figcaption>';
+  isoRow.appendChild(f);
+});
+
+/* ---------------- L10 calculators ---------------- */
+const SUBS={'C (12.01 g/mol)':12.01,'H₂O (18.02 g/mol)':18.02,'NaCl (58.44 g/mol)':58.44,'CO₂ (44.01 g/mol)':44.01,'Fe (55.85 g/mol)':55.85};
+const molSub=document.getElementById('molSub');
+Object.keys(SUBS).forEach(k=>{const o=document.createElement('option');o.textContent=k;molSub.appendChild(o);});
+document.getElementById('molGo').onclick=()=>{
+  const n=parseFloat(document.getElementById('molIn').value);
+  const key=molSub.value,mm=SUBS[key],name=key.split(' ')[0];
+  const out=document.getElementById('molOut');
+  if(isNaN(n)){out.textContent='Enter a number of moles to convert.';return;}
+  out.textContent=n+' mol '+name+'  ×  '+mm+' g/mol  =  '+(n*mm).toFixed(2)+' g '+name
+    +'\n\nparticles: '+n+' × 6.022 × 10²³ = '+(n*6.022).toFixed(3)+' × 10²³';
+};
+const COMPOUNDS={
+  'CaF₂':[['Ca',40.08,1],['F',19.00,2]],
+  'H₂O':[['H',1.008,2],['O',16.00,1]],
+  'CO₂':[['C',12.01,1],['O',16.00,2]],
+  'Fe₂O₃':[['Fe',55.85,2],['O',16.00,3]]
+};
+const pcComp=document.getElementById('pcComp'),pcEl=document.getElementById('pcEl'),pcOut=document.getElementById('pcOut');
+Object.keys(COMPOUNDS).forEach(k=>{const o=document.createElement('option');o.textContent=k;pcComp.appendChild(o);});
+function fillEls(){
+  pcEl.innerHTML='';
+  COMPOUNDS[pcComp.value].forEach(([s])=>{const o=document.createElement('option');o.textContent=s;pcEl.appendChild(o);});
+  calcPC();
+}
+function calcPC(){
+  const parts=COMPOUNDS[pcComp.value];
+  const total=parts.reduce((a,[,m,n])=>a+m*n,0);
+  const [sym,mass,n]=parts.find(p=>p[0]===pcEl.value);
+  const contrib=mass*n;
+  pcOut.textContent=
+    pcComp.value+' molar mass\n'+
+    parts.map(([s,m,c])=>'  '+s+': '+m.toFixed(2)+' × '+c+' = '+(m*c).toFixed(2)).join('\n')+
+    '\n  total = '+total.toFixed(2)+' g/mol\n\n'+
+    '% '+sym+' = '+contrib.toFixed(2)+' ÷ '+total.toFixed(2)+' × 100 = '+(contrib/total*100).toFixed(1)+'%';
+}
+pcComp.onchange=fillEls;pcEl.onchange=calcPC;fillEls();
+
+document.getElementById('revealModel').onclick=function(){
+  document.getElementById('modelAns').style.display='block';
+  this.style.display='none';
+};
+</script>
+</body>
+</html>
